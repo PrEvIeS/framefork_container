@@ -49,7 +49,7 @@ fi
 
 if [ "$1" == "up" ];
   then
-    docker run -it framework -d
+    docker run -it --name framework -d framework
 fi
 
 if [ "$1" == "down" ];
