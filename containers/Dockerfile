@@ -27,8 +27,6 @@ COPY ./nginx_conf/nginx.conf /etc/nginx/nginx.conf
 COPY ./nginx_conf/default.conf /etc/nginx/conf.d/default.conf
 RUN sed -i "s/#PROJECT_PREFIX#/${PROJECT_PREFIX}/g" /etc/nginx/conf.d/default.conf
 COPY ./nginx_conf/www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY ./nginx_conf/upstream.conf /etc/nginx/conf.d/upstream.conf
-
 
 EXPOSE 80
 
