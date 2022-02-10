@@ -38,7 +38,7 @@ function runInPhp {
 }
 
 function enterInPhp {
-    docker exec -it framework su www-data
+    docker exec -it framework_run su www-data
     return $?
 }
 
@@ -49,19 +49,19 @@ fi
 
 if [ "$1" == "up" ];
   then
-    docker run -it --name framework -d framework
+    docker run --rm -v /home/denn/PhpstormProjects/framefork_container:/var/www/html -p 0.0.0.0:80:80 -it --name framework_run -d framework
 fi
 
 if [ "$1" == "down" ];
   then
-    docker_stop_all
+    docker stop framework_run
 fi
 
 if [ "$1" == "run" ];
   then
     if [ "$2" == "" ];
         then
-        docker exec -u www-data -it framework bash
+        docker exec -it framework_run bash;
         else
         runInPhp "${@:2}"
     fi

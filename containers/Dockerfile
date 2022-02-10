@@ -1,6 +1,29 @@
 FROM alpine:3.15.0
 
-RUN apk add nginx php-fpm mysql shadow
+RUN apk add --update nginx \
+     php \
+     php-fpm \
+     php-opcache \
+     php-gd \
+     php-mysqli \
+     php-zlib \
+     php-curl \
+     mariadb \
+     mariadb-client \
+     shadow \
+     bash \
+     util-linux\
+     openrc \
+     supervisor \
+     vim
+
+RUN php -v
+
+RUN mkdir -p /var/run/mysqld
+RUN mkdir -p /var/log/mysql
+
+RUN mkdir -p /run/php
+RUN chown -R mysql:mysql /var/lib/mysql && chown -R mysql:mysql /var/log/mysql
 
 ARG USER_ID='1000'
 ARG USER_ID=${USER_ID}
@@ -10,28 +33,34 @@ ARG GROUP_ID='1000'
 ARG GROUP_ID=${GROUP_ID}
 ENV GROUP_ID ${GROUP_ID}
 
-ARG APP_ENV='prod'
-ARG APP_ENV=${APP_ENV}
-ENV APP_ENV ${APP_ENV}
-
 ARG PROJECT_PREFIX='framework'
 ARG PROJECT_PREFIX=${PROJECT_PREFIX}
 ENV PROJECT_PREFIX=${PROJECT_PREFIX}
+ENV MYSQL_ROOT_PASSWORD=rpassword
+ENV MYSQL_DATABASE=framework_db
+ENV MYSQL_USER=sysdba
+ENV MYSQL_PASSWORD=upassword
 
-RUN groupmod -g $USER_ID mysql
-RUN usermod -u $USER_ID mysql
 RUN apk --no-cache add shadow
+RUN adduser -D -u $USER_ID -s /bin/bash www-data -G www-data
 
-#
-COPY ./nginx_conf/nginx.conf /etc/nginx/nginx.conf
-COPY ./nginx_conf/default.conf /etc/nginx/conf.d/default.conf
-COPY ./nginx_conf/www.conf /usr/local/etc/php-fpm.d/www.conf
+COPY ./conf/mysql_init.sql /tmp/mysql_init.sql
+COPY ./conf/init_mysql.sh /tmp/init_mysql.sh
+
+RUN chmod +x /tmp/init_mysql.sh && /tmp/init_mysql.sh
+
+COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
+COPY ./conf/www.conf /etc/php7/php-fpm.d/www.conf
+COPY ./conf/my.cnf /etc/mysql/my.cnf
+
+COPY ./conf/supervisor.conf /etc/supervisord.conf
+
+RUN sed -i "s/#PROJECT_PREFIX#/${PROJECT_PREFIX}/g" /etc/nginx/conf.d/default.conf
 RUN sed -i -e "s/www-data:x:82:82:Linux User,,,:\/home\/www-data:\/sbin\/nologin/www-data:x:${USER_ID}:${GROUP_ID}:Linux User,,,:\/home\/www-data:\/bin\/bash/g" /etc/passwd
 RUN sed -i -e "s/www-data:x:82:www-data/www-data:x:${GROUP_ID}:www-data/g" /etc/group
-RUN sed -i "s/#PROJECT_PREFIX#/${PROJECT_PREFIX}/g" /etc/nginx/conf.d/default.conf
+
 
 EXPOSE 80
-
 STOPSIGNAL SIGTERM
-
-CMD ["nginx", "-g", "daemon off;"]
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
