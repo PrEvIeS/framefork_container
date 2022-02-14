@@ -8,16 +8,19 @@ RUN apk add --update nginx \
      php-mysqli \
      php-zlib \
      php-curl \
-     mariadb \
-     mariadb-client \
+     php7-pdo_mysql \
+     php7-pdo \
+     php7-mysqli \
+     mysql \
+     mysql-client \
      shadow \
      bash \
      util-linux\
      openrc \
      supervisor \
-     vim
-
-RUN php -v
+     vim \
+    && addgroup mysql mysql \
+    && rm -rf /var/cache/apk/*
 
 RUN mkdir -p /var/run/mysqld
 RUN mkdir -p /var/log/mysql
@@ -44,17 +47,17 @@ ENV MYSQL_PASSWORD=upassword
 RUN apk --no-cache add shadow
 RUN adduser -D -u $USER_ID -s /bin/bash www-data -G www-data
 
-COPY ./conf/mysql_init.sql /tmp/mysql_init.sql
-COPY ./conf/init_mysql.sh /tmp/init_mysql.sh
+COPY ./containers/conf/init_mysql.sh /tmp/init_mysql.sh
+COPY ./containers/conf/mysql_init.sql /tmp/mysql_init.sql
 
-RUN chmod +x /tmp/init_mysql.sh && /tmp/init_mysql.sh
+RUN chmod +x /tmp/init_mysql.sh
 
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
-COPY ./conf/default.conf /etc/nginx/conf.d/default.conf
-COPY ./conf/www.conf /etc/php7/php-fpm.d/www.conf
-COPY ./conf/my.cnf /etc/mysql/my.cnf
+COPY ./containers/conf/nginx.conf /etc/nginx/nginx.conf
+COPY ./containers/conf/default.conf /etc/nginx/conf.d/default.conf
+COPY ./containers/conf/www.conf /etc/php7/php-fpm.d/www.conf
+COPY ./containers/conf/my.cnf /etc/mysql/my.cnf
 
-COPY ./conf/supervisor.conf /etc/supervisord.conf
+COPY ./containers/conf/supervisor.conf /etc/supervisord.conf
 
 RUN sed -i "s/#PROJECT_PREFIX#/${PROJECT_PREFIX}/g" /etc/nginx/conf.d/default.conf
 RUN sed -i -e "s/www-data:x:82:82:Linux User,,,:\/home\/www-data:\/sbin\/nologin/www-data:x:${USER_ID}:${GROUP_ID}:Linux User,,,:\/home\/www-data:\/bin\/bash/g" /etc/passwd

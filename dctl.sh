@@ -38,7 +38,7 @@ function runInPhp {
 }
 
 function enterInPhp {
-    docker exec -it framework_run su www-data
+    docker exec -it framework_run bash
     return $?
 }
 
@@ -49,7 +49,17 @@ fi
 
 if [ "$1" == "up" ];
   then
-    docker run --rm -v /home/denn/PhpstormProjects/framefork_container:/var/www/html -p 0.0.0.0:80:80 -it --name framework_run -d framework
+    docker run --rm \
+     -v $(pwd):/var/www/html \
+     -v $(pwd)/containers/data/:/var/lib/mysql \
+     -e MYSQL_DATABASE=framework \
+     -e MYSQL_USER=dev \
+     -e MYSQL_PASSWORD=dev \
+     -e MYSQL_ROOT_PASSWORD=dev\
+     -p 0.0.0.0:80:80 \
+     -p 3306:3306\
+     -it --name framework_run \
+     -d framework
 fi
 
 if [ "$1" == "down" ];
@@ -61,7 +71,7 @@ if [ "$1" == "run" ];
   then
     if [ "$2" == "" ];
         then
-        docker exec -it framework_run bash;
+          docker exec -it framework_run su www-data -c "cd /var/www/html/; bash -l";
         else
         runInPhp "${@:2}"
     fi

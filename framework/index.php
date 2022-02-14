@@ -1,3 +1,4 @@
 <?php
-echo "<pre>" . print_r('Anime top',true) . "</pre>";
+
+echo "<pre>" . print_r(PDO::getAvailableDrivers(),true) . "</pre>";
 die;
