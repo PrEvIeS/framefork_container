@@ -1,6 +1,6 @@
 CREATE DATABASE IF NOT EXISTS framework;
 USE framework;
-
+GRANT ALL ON framework.* to dev@localhost IDENTIFIED BY 'dev';
 CREATE TABLE users
 (
     id            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
