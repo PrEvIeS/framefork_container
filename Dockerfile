@@ -22,11 +22,11 @@ RUN apk add --update nginx \
     && addgroup mysql mysql \
     && rm -rf /var/cache/apk/*
 
-RUN mkdir -p /var/run/mysqld
-RUN mkdir -p /var/log/mysql
-
+RUN mkdir -p /var/run/mysqld && chown -R mysql.mysql /var/run/mysqld
+RUN mkdir -p /var/log/mysql && chown -R mysql.mysql /var/log/mysql
+RUN mysql_install_db --user=mysql  --datadir=/var/lib/mysql/
 RUN mkdir -p /run/php
-RUN chown -R mysql:mysql /var/lib/mysql && chown -R mysql:mysql /var/log/mysql
+
 
 ARG USER_ID='1000'
 ARG USER_ID=${USER_ID}
@@ -47,15 +47,11 @@ ENV MYSQL_PASSWORD=upassword
 RUN apk --no-cache add shadow
 RUN adduser -D -u $USER_ID -s /bin/bash www-data -G www-data
 
-COPY ./containers/conf/init_mysql.sh /tmp/init_mysql.sh
 COPY ./containers/conf/mysql_init.sql /tmp/mysql_init.sql
-
-RUN chmod +x /tmp/init_mysql.sh
 
 COPY ./containers/conf/nginx.conf /etc/nginx/nginx.conf
 COPY ./containers/conf/default.conf /etc/nginx/conf.d/default.conf
 COPY ./containers/conf/www.conf /etc/php7/php-fpm.d/www.conf
-COPY ./containers/conf/my.cnf /etc/mysql/my.cnf
 
 COPY ./containers/conf/supervisor.conf /etc/supervisord.conf
 

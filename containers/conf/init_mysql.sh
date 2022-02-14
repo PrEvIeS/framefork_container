@@ -47,4 +47,4 @@ EOF
 fi
 mysql $MYSQL_DATABASE < mysql_init.sql
 
-exec /usr/bin/mysqld --user=root --console
+exec /usr/bin/mysqld --user=mysql  --console

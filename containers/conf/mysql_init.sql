@@ -1,3 +1,4 @@
+CREATE DATABASE IF NOT EXISTS framework;
 USE framework;
 
 CREATE TABLE users
@@ -17,10 +18,14 @@ CREATE TABLE user_groups
 );
 CREATE TABLE group_of_users
 (
-    id       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+    id       INT(11) UNSIGNED  NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (id),
-    user_id  INTEGER          NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users (id) ,
-    group_id INTEGER     NOT NULL,
-    FOREIGN KEY (group_id) REFERENCES user_groups (id)
+    user_id  INT(11) UNSIGNED NOT NULL,
+    CONSTRAINT `fk_user_id`
+        FOREIGN KEY (user_id) REFERENCES users (id)
+            ON DELETE CASCADE,
+    group_id INT(11) UNSIGNED NOT NULL,
+    CONSTRAINT `fk_group_id`
+        FOREIGN KEY (group_id) REFERENCES user_groups (id)
+            ON DELETE CASCADE
 );

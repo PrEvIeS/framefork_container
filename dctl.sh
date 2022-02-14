@@ -51,7 +51,6 @@ if [ "$1" == "up" ];
   then
     docker run --rm \
      -v $(pwd):/var/www/html \
-     -v $(pwd)/containers/data/:/var/lib/mysql \
      -e MYSQL_DATABASE=framework \
      -e MYSQL_USER=dev \
      -e MYSQL_PASSWORD=dev \
@@ -75,6 +74,10 @@ if [ "$1" == "run" ];
         else
         runInPhp "${@:2}"
     fi
+fi
+if [ "$1" == "db" ];
+  then
+    docker exec -it framework_run su www-data -c "mysql < /tmp/mysql_init.sql ";
 fi
 
 if [ "$1" == "in" ];
