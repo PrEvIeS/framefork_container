@@ -1,6 +1,17 @@
 CREATE DATABASE IF NOT EXISTS framework;
+
+CREATE USER 'dev'@'localhost' IDENTIFIED BY 'dev';
+
+GRANT ALL PRIVILEGES ON *.* TO 'dev'@'localhost' WITH GRANT OPTION;
+
+CREATE USER 'dev'@'%' IDENTIFIED BY 'dev';
+
+GRANT ALL PRIVILEGES ON *.* TO 'dev'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+
 USE framework;
-GRANT ALL ON framework.* to dev@localhost IDENTIFIED BY 'dev';
+
 CREATE TABLE users
 (
     id            INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -18,7 +29,7 @@ CREATE TABLE user_groups
 );
 CREATE TABLE group_of_users
 (
-    id       INT(11) UNSIGNED  NOT NULL AUTO_INCREMENT,
+    id       INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
     PRIMARY KEY (id),
     user_id  INT(11) UNSIGNED NOT NULL,
     CONSTRAINT `fk_user_id`

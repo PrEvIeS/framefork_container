@@ -10,11 +10,16 @@ RUN apk add --update nginx \
      php-curl \
      php7-pdo_mysql \
      php7-pdo \
+     php7-json\
+     php7-phar \
+     php7-iconv \
+     php7-mbstring \
      php7-mysqli \
      mysql \
      mysql-client \
      shadow \
      bash \
+     curl \
      util-linux\
      openrc \
      supervisor \
@@ -27,6 +32,8 @@ RUN mkdir -p /var/log/mysql && chown -R mysql.mysql /var/log/mysql
 RUN mysql_install_db --user=mysql  --datadir=/var/lib/mysql/
 RUN mkdir -p /run/php
 
+RUN cd /bin && curl --silent --show-error https://getcomposer.org/installer | php && mv composer.phar composer && chmod 777 composer
+RUN alias composer='php composer.phar'
 
 ARG USER_ID='1000'
 ARG USER_ID=${USER_ID}
@@ -48,6 +55,7 @@ RUN apk --no-cache add shadow
 RUN adduser -D -u $USER_ID -s /bin/bash www-data -G www-data
 
 COPY ./containers/conf/mysql_init.sql /tmp/mysql_init.sql
+COPY ./containers/conf/mariadb-server.cnf /etc/my.cnf.d/
 
 COPY ./containers/conf/nginx.conf /etc/nginx/nginx.conf
 COPY ./containers/conf/default.conf /etc/nginx/conf.d/default.conf

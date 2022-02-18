@@ -56,7 +56,7 @@ if [ "$1" == "up" ];
      -e MYSQL_PASSWORD=dev \
      -e MYSQL_ROOT_PASSWORD=dev\
      -p 0.0.0.0:80:80 \
-     -p 3306:3306\
+     -p 0.0.0.0:3306:3306\
      -it --name framework_run \
      -d framework
 fi
@@ -77,7 +77,7 @@ if [ "$1" == "run" ];
 fi
 if [ "$1" == "db" ];
   then
-    docker exec -it framework_run su www-data -c "mysql < /tmp/mysql_init.sql ";
+    docker exec -it framework_run su root -c "mysql < /tmp/mysql_init.sql ";
 fi
 
 if [ "$1" == "in" ];
