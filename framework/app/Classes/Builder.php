@@ -61,6 +61,17 @@ class Builder
         return $this;
     }
 
+    public function where($column, $operator = null, $value = null)
+    {
+        $this->wheres = [
+            'column' => $column,
+            'operator' => $operator,
+            'value' => $value,
+        ];
+
+        return $this;
+    }
+
     public function insert(array $values)
     {
         if (empty($values)) {
@@ -76,6 +87,29 @@ class Builder
                 $values[$key] = $value;
             }
         }
-        return $this->connection->insert($this->connection->compileInsert($this, $values),$values[0]);
+        return $this->connection->insert($this->connection->compileInsert($this, $values), $values[0]);
+    }
+
+    public function delete($id = null)
+    {
+        if (!is_null($id)) {
+            $this->where($this->from.'.id', '=', $id);
+        }
+
+        return $this->connection->delete($this->connection->compileDelete($this), $this->bindings);
+    }
+
+    public function selectAll($columns = ['*'])
+    {
+        $this->columns = [];
+        $this->bindings['select'] = [];
+
+        $columns = is_array($columns) ? $columns : func_get_args();
+
+        foreach ($columns as $as => $column) {
+            $this->columns[] = $column;
+        }
+
+        return $this->connection->select($this->connection->compileSelect($this, $columns));
     }
 }

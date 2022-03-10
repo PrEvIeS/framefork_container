@@ -2,31 +2,25 @@
     <div class="position-sticky pt-3">
         <ul class="nav flex-column">
             <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="#">
-                    <span data-feather="users"></span>
-                    Пользователи
+                <a class="nav-link <?= $_SERVER['REQUEST_URI'] == '/' ? 'active' : ''?>" aria-current="page" href="/">
+                    <span data-feather="home"></span>
+                    Главная
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <span data-feather="users"></span>
-                    Группы
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link <?= $_SERVER['REQUEST_URI'] == '/persons' ? 'active' : ''?>" href="/persons">
                     <span data-feather="tool"></span>
                     Редактирование пользователей
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link <?= $_SERVER['REQUEST_URI'] == '/groups' ? 'active' : ''?>" href="/groups">
                     <span data-feather="users"></span>
-                    Пользователи и группы
+                    Редактирование групп
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link <?= $_SERVER['REQUEST_URI'] == '/dategym' ? 'active' : ''?>" href="/dategym">
                     <span data-feather="calendar"></span>
                     Date Gym
                 </a>

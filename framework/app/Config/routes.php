@@ -8,7 +8,7 @@ return [
     new Route('/users/addGroup', 'users', 'addGroup'),
     new Route('/users/delete/:id', 'users', 'deleteUser'),
     new Route('/users/update/:id', 'users', 'updateUser'),
-    new Route('/users/', 'users', 'list'),
+    new Route('/persons', 'users', 'getList'),
     new Route('/groups/add', 'groups', 'addGroup'),
     new Route('/groups/delete/:id', 'groups', 'deleteGroup'),
     new Route('/groups/update/:id', 'groups', 'updateGroup'),

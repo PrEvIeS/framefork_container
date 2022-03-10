@@ -32,6 +32,28 @@ class Connection
         return $this->statement($query, $bindings);
     }
 
+    public function select($query)
+    {
+        return $this->getPdo()->query("$query")->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function delete($query, $bindings = [])
+    {
+        return $this->affectingStatement($query, $bindings);
+    }
+
+    public function affectingStatement($query, $bindings = [])
+    {
+        return $this->run($query, $bindings, function ($query, $bindings) {
+
+            $statement = $this->getPdo()->prepare($query);
+
+            $statement->execute();
+
+            return $statement->rowCount();
+        });
+    }
+
     /**
      * @param $query
      * @param array $bindings
@@ -44,8 +66,7 @@ class Connection
             $statement = $this->getPdo()->prepare($query);
 
             $this->bindValues($statement, $bindings);
-            var_dump($statement->execute());
-            die();
+
             return $statement->execute();
         });
     }
@@ -61,12 +82,32 @@ class Connection
 
         $columns = implode(',', array_keys(reset($values)));
 
-        $keys = array_map(function ($key){
-            return ':'.$key;
-        },array_keys($values[0]));
+        $keys = array_map(function ($key) {
+            return ':' . $key;
+        }, array_keys($values[0]));
 
-        $parameters = '('.implode(',',$keys).')';
+        $parameters = '(' . implode(',', $keys) . ')';
         return "INSERT INTO $table ($columns) VALUES $parameters";
+    }
+
+    /**
+     * @param Builder $query
+     * @param array $values
+     * @return string
+     */
+    public function compileSelect(Builder $query, array $values): string
+    {
+        $table = $query->from;
+        return "SELECT * FROM $table";
+    }
+
+    public function compileDelete(Builder $query)
+    {
+        $table = $query->from;
+
+        $where = $this->compileWheres($query);
+
+        return trim("DELETE FROM $table $where");
     }
 
     protected function run($query, $bindings, Closure $callback)
@@ -102,5 +143,10 @@ class Connection
         }
 
         return $this->pdo;
+    }
+
+    private function compileWheres(Builder $query)
+    {
+        return "where" . ' ' . implode(' ', $query->wheres);
     }
 }

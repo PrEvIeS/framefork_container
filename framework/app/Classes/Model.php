@@ -22,11 +22,25 @@ class Model
         }
     }
 
-    public function save(array $options = [])
+    public function save()
     {
         $query = $this->newBuilder($this->getConnection())->setModel($this);
         $saved = $this->performInsert($query);
         return $saved;
+    }
+
+    public function getAll()
+    {
+        $query = $this->newBuilder($this->getConnection())->setModel($this);
+        $items = $this->performSelectAll($query);
+        return $items;
+    }
+
+    public function deleteRawById($id)
+    {
+        $query = $this->newBuilder($this->getConnection())->setModel($this);
+        $items = $query->where('id', '=' , $id)->delete();
+        return $items;
     }
 
     public function getConnection()
@@ -53,6 +67,11 @@ class Model
         $this->exists = true;
 
         return true;
+    }
+
+    protected function performSelectAll(Builder $query)
+    {
+        return $query->selectAll();
     }
 
     public function getTable()

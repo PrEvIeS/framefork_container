@@ -13,11 +13,11 @@ require_once 'app/Config/constant.php';
 
 $routes = require $_SERVER['DOCUMENT_ROOT'] . '/app/Config/routes.php';
 
+
 $router = new Router();
 $track = $router->getTrack($routes, $_SERVER['REQUEST_URI']);
 
 $dispatcher = new Dispatcher();
 $page = $dispatcher->getPage($track);
-
 $view = new View();
 echo $view->render($page);

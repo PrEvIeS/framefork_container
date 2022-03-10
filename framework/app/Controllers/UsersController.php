@@ -7,6 +7,8 @@ use App\Models\UsersModel;
 
 class UsersController extends Controller
 {
+    protected $layout = 'main';
+
     public function addUser()
     {
         $user = new UsersModel([
@@ -17,10 +19,37 @@ class UsersController extends Controller
         ]);
 
         if ($user->save()) {
-            echo json_encode(['success' => 'Пользователь успешно добавлен']);
+            http_response_code(200);
+            $response = ['text' => 'Пользователь успешно добавлен'];
         } else {
-            echo json_encode(['error' => 'Не удалось добавить пользователя']);
+            http_response_code(400);
+            $response = ['text' => 'Не удалось добавить пользователя'];
         }
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($response);
+        die();
+    }
+
+    public function getList()
+    {
+        $this->title = 'Пользователи';
+
+        $testUser['USERS'] = (new UsersModel())->getAll();
+        return $this->render('users', $testUser);
+    }
+
+    public function deleteUser($id)
+    {
+        $user = new UsersModel();
+        if ($user->deleteRawById($id['id'])) {
+            http_response_code(200);
+            $response = ['text' => 'Пользователь успешно удален'];
+        } else {
+            http_response_code(400);
+            $response = ['text' => 'Не удалось удалить пользователя'];
+        }
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode($response);
         die();
     }
 }
