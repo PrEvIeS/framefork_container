@@ -8,7 +8,7 @@ class Model
 
     protected $table;
     private $connection;
-    private $attributes;
+    protected $attributes;
 
     public function __construct(array $attributes = [])
     {
@@ -72,6 +72,11 @@ class Model
     protected function performSelectAll(Builder $query)
     {
         return $query->selectAll();
+    }
+
+    protected function performSelectUserAndGroups(Builder $query)
+    {
+        return $query->selectUserAndGroups();
     }
 
     public function getTable()

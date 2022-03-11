@@ -112,4 +112,18 @@ class Builder
 
         return $this->connection->select($this->connection->compileSelect($this, $columns));
     }
+
+    public function selectUserAndGroups($columns = ['*'])
+    {
+        $this->columns = [];
+        $this->bindings['select'] = [];
+
+        $columns = is_array($columns) ? $columns : func_get_args();
+
+        foreach ($columns as $as => $column) {
+            $this->columns[] = $column;
+        }
+
+        return $this->connection->select($this->connection->compileSelectUsersAndGroups($this, $columns));
+    }
 }

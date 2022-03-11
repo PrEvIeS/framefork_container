@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Classes\Controller;
+use App\Models\GroupsModel;
 use App\Models\UsersModel;
 
 class UsersController extends Controller
@@ -18,7 +19,10 @@ class UsersController extends Controller
             'date_of_birth' => $_POST['date_of_birth'],
         ]);
 
-        if ($user->save()) {
+        if ($id = $user->save()) {
+            if (!empty($_POST['group'])){
+                $user->addGroup($id,$_POST['group']);
+            }
             http_response_code(200);
             $response = ['text' => 'Пользователь успешно добавлен'];
         } else {
@@ -35,6 +39,7 @@ class UsersController extends Controller
         $this->title = 'Пользователи';
 
         $testUser['USERS'] = (new UsersModel())->getAll();
+        $testUser['GROUPS'] = (new GroupsModel())->getAll();
         return $this->render('users', $testUser);
     }
 

@@ -8,33 +8,33 @@ class DateTime extends \DateTime
      * @param string $date
      * @return false|string
      */
-    public function dateAfterWeek(string $date)
+    public static function dateAfterWeek(string $date)
     {
         if (($dateAt = strtotime('+1 week', strtotime($date))) === false) {
             return "Строка ($date) недопустима";
         }
 
-        return date('d.m.y', $dateAt);
+        return date('d.m.Y', $dateAt);
     }
 
     /**
      * @param string $date
      * @return false|string
      */
-    public function dateAfterMonth(string $date)
+    public static function dateAfterMonth(string $date)
     {
         if (($dateAt = strtotime('+1 month', strtotime($date))) === false) {
             return "Строка ($date) недопустима";
         }
 
-        return date('d.m.y', $dateAt);
+        return date('d.m.Y', $dateAt);
     }
 
     /**
      * @param string $date
      * @return false|string
      */
-    public function getStartOfDay(string $date)
+    public static function getStartOfDay(string $date)
     {
         if (($timestamp = strtotime($date)) === false) {
             return "Строка ($date) недопустима";
@@ -46,7 +46,7 @@ class DateTime extends \DateTime
      * @param string $date
      * @return false|string
      */
-    public function getEndOfDay(string $date)
+    public static function getEndOfDay(string $date)
     {
         if (($timestamp = strtotime($date)) === false) {
             return "Строка ($date) недопустима";

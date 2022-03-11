@@ -66,8 +66,8 @@ class Connection
             $statement = $this->getPdo()->prepare($query);
 
             $this->bindValues($statement, $bindings);
-
-            return $statement->execute();
+            $statement->execute();
+            return $this->pdo->lastInsertId();
         });
     }
 
@@ -99,6 +99,19 @@ class Connection
     {
         $table = $query->from;
         return "SELECT * FROM $table";
+    }
+
+    /**
+     * @param Builder $query
+     * @return string
+     */
+    public function compileSelectUsersAndGroups(Builder $query): string
+    {
+        $table = $query->from;
+        return "SELECT $table.id, users.last_name, users.name, users.second_name,user_groups.name as group_name
+                FROM $table
+                JOIN users ON users.id = $table.user_id
+                JOIN user_groups ON user_groups.id = $table.group_id";
     }
 
     public function compileDelete(Builder $query)

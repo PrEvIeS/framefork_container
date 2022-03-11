@@ -19,5 +19,6 @@ $track = $router->getTrack($routes, $_SERVER['REQUEST_URI']);
 
 $dispatcher = new Dispatcher();
 $page = $dispatcher->getPage($track);
+
 $view = new View();
 echo $view->render($page);

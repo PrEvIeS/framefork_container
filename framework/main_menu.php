@@ -14,7 +14,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link <?= $_SERVER['REQUEST_URI'] == '/groups' ? 'active' : ''?>" href="/groups">
+                <a class="nav-link <?= $_SERVER['REQUEST_URI'] == '/teams' ? 'active' : ''?>" href="/teams">
                     <span data-feather="users"></span>
                     Редактирование групп
                 </a>

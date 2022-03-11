@@ -10,7 +10,7 @@
             <div class="col-md-5">
                 <label for="exampleInputEmail1" class="form-label">Добавление пользователя</label>
                 <div class="form-control">
-                    <form id="addUser">
+                    <form id="add" action="/users/add">
                         <div class="mb-6">
                             <label for="exampleInputEmail1" class="form-label">Фамилия</label>
                             <input type="text" class="form-control" name="last_name">
@@ -22,6 +22,15 @@
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Отчество</label>
                             <input type="text" class="form-control" name="second_name">
+                        </div>
+                        <div class="mb-3">
+                            <label for="exampleInputPassword1" class="form-label">Группа</label>
+                            <select class="form-select" name="group">
+                                <option selected></option>
+                                <?php foreach ($arResult['GROUPS'] as $GROUP): ?>
+                                    <option value="<?= $GROUP['id'] ?>"><?= $GROUP['name'] ?></option>
+                                <?php endforeach; ?>
+                            </select>
                         </div>
                         <div class="mb-3">
                             <label for="exampleInputPassword1" class="form-label">Дата рождения</label>
